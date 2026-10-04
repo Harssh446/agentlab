@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block header_title %}Workspace: <span class="fs-6 text-muted ms-2">{{ project.idea[:50] }}...</span>{% endblock %}
+
+{% block content %}
+<div class="row h-100">
+    <!-- Main Workspace (Left) -->
+    <div class="col-md-8 h-100 d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <ul class="nav nav-pills custom-tabs" id="docTabs" role="tablist">
+                {% for doc in doc_order %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ 'active' if loop.first else '' }} doc-tab-btn" 
+                            id="tab-{{ doc }}" data-bs-toggle="tab" data-bs-target="#content-{{ doc }}" 
+                            type="button" role="tab" data-doc="{{ doc }}">
+                        {{ doc | upper }}
+                        <span class="status-indicator ms-1" id="status-{{ doc }}">
+                            {% if doc in project.documents %}<i class="fa-solid fa-check text-success"></i>
+                            {% elif project.status == 'Draft' or project.status == 'Generating' %}<i class="fa-solid fa-circle-notch fa-spin text-warning"></i>
+                            {% else %}<i class="fa-solid fa-clock text-muted"></i>{% endif %}
+                        </span>
+                    </button>
+                </li>
+                {% endfor %}
+            </ul>
+            <a href="{{ url_for('download_zip', project_id=project.id) }}" class="btn btn-sm btn-accent text-dark fw-bold">
+                <i class="fa-solid fa-file-zipper"></i> Download All
+            </a>
+        </div>
+
+        <div class="tab-content flex-grow-1 bg-dark-card rounded-3 border border-secondary p-4 overflow-auto position-relative soft-shadow" id="docTabContent">
+            {% for doc in doc_order %}
+            <div class="tab-pane fade {{ 'show active' if loop.first else '' }} h-100" id="content-{{ doc }}" role="tabpanel">
+                
+                <div class="d-flex justify-content-end mb-2 gap-2 position-absolute top-0 end-0 p-3 z-3">
+                    <button class="btn btn-sm btn-dark border-secondary copy-btn" data-doc="{{ doc }}"><i class="fa-regular fa-copy"></i> Copy</button>
+                    <a href="{{ url_for('download_md', project_id=project.id, doc_type=doc) }}" class="btn btn-sm btn-dark border-secondary dl-btn" data-doc="{{ doc }}"><i class="fa-solid fa-download"></i></a>
+                    <button class="btn btn-sm btn-dark border-secondary edit-btn" data-doc="{{ doc }}"><i class="fa-solid fa-pen"></i> Edit</button>
+                    <button class="btn btn-sm btn-outline-warning regen-btn" data-doc="{{ doc }}" title="Regenerate"><i class="fa-solid fa-rotate-right"></i></button>
+                </div>
+
+                <!-- Display Area -->
+                <div id="display-{{ doc }}" class="markdown-body h-100 pt-4">
+                    {% if doc in project.documents %}
+                        {% if doc == 'diagram' %}
+                            <div class="mermaid">{{ project.documents[doc] }}</div>
+                        {% else %}
+                            <div class="raw-md d-none">{{ project.documents[doc] }}</div>
+                            <div class="rendered-md"></div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center text-muted mt-5 pt-5">
+                            <div class="spinner-border text-accent mb-3 generation-spinner" role="status"></div>
+                            <h5>Waiting for generation...</h5>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Edit Area -->
+                <div id="edit-area-{{ doc }}" class="d-none h-100 pt-4 flex-column">
+                    <textarea class="form-control bg-dark text-light border-secondary flex-grow-1 mb-3 font-monospace" id="textarea-{{ doc }}">{{ project.documents.get(doc, '') }}</textarea>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button class="btn btn-secondary cancel-edit-btn" data-doc="{{ doc }}">Cancel</button>
+                        <button class="btn btn-accent text-dark save-edit-btn" data-doc="{{ doc }}">Save Changes</button>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Right Panel: AI Chat & History -->
+    <div class="col-md-4 h-100 d-flex flex-column">
+        <div class="card bg-dark-card border-secondary h-50 mb-3 soft-shadow flex-grow-1">
+            <div class="card-header border-secondary bg-dark text-white fw-bold">
+                <i class="fa-solid fa-robot text-accent"></i> AI Assistant
+            </div>
+            <div class="card-body overflow-auto" id="chatHistory">
+                <div class="text-muted small mb-2">Ask questions about your project. The AI has context of your generated documents.</div>
+            </div>
+            <div class="card-footer border-secondary bg-dark p-2">
+                <form id="chatForm" class="d-flex gap-2">
+                    <input type="text" id="chatInput" class="form-control bg-darker text-light border-secondary form-control-sm" placeholder="Ask AI..." required>
+                    <button type="submit" class="btn btn-sm btn-accent text-dark"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card bg-dark-card border-secondary h-50 soft-shadow">
+            <div class="card-header border-secondary bg-dark text-white fw-bold">
+                <i class="fa-solid fa-clock-rotate-left"></i> Run History
+            </div>
+            <div class="card-body overflow-auto p-2 font-monospace small">
+                <ul class="list-group list-group-flush" id="historyLog">
+                    {% for log in project.history|reverse %}
+                    <li class="list-group-item bg-transparent text-light border-secondary p-2">
+                        <span class="text-muted">[{{ log.timestamp[11:19] }}]</span> 
+                        <span class="text-accent">{{ log.action }}</span>: {{ log.details }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden script config -->
+<script>
+    window.PROJECT_ID = "{{ project.id }}";
+    window.DOC_ORDER = {{ doc_order | tojson }};
+    window.STATUS = "{{ project.status }}";
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/project.js') }}"></script>
+{% endblock %}

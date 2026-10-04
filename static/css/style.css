@@ -1,0 +1,114 @@
+:root {
+    --bg-darker: #121212;
+    --bg-dark: #1e1e1e;
+    --bg-card: #252526;
+    --accent: #00f2fe;
+    --accent-hover: #4facfe;
+    --text-main: #e0e0e0;
+}
+
+body {
+    background-color: var(--bg-darker);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    height: 100vh;
+}
+
+.bg-darker { background-color: var(--bg-darker) !important; }
+.bg-dark-card { background-color: var(--bg-card) !important; }
+.text-accent { color: var(--accent) !important; }
+
+.btn-accent {
+    background-color: var(--accent);
+    border-color: var(--accent);
+}
+.btn-accent:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+.btn-outline-accent {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+.btn-outline-accent:hover {
+    background-color: var(--accent);
+    color: #121212;
+}
+
+.soft-shadow {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+}
+
+/* Tabs */
+.custom-tabs .nav-link {
+    color: var(--text-main);
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+.custom-tabs .nav-link.active {
+    background: transparent;
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+}
+.custom-tabs .nav-link:hover:not(.active) {
+    border-bottom: 2px solid gray;
+}
+
+/* Markdown styling */
+.markdown-body {
+    color: #c9d1d9;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 0.3em;
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+.markdown-body pre {
+    background-color: #161b22;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+}
+.markdown-body code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    background-color: rgba(110,118,129,0.4);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+}
+.markdown-body pre code { background-color: transparent; padding: 0;}
+.markdown-body table { width: 100%; margin-bottom: 1rem; border-collapse: collapse;}
+.markdown-body table th, .markdown-body table td {
+    padding: 6px 13px;
+    border: 1px solid #30363d;
+}
+
+/* Chat bubble */
+.chat-msg {
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    max-width: 85%;
+    font-size: 0.9rem;
+}
+.chat-user {
+    background-color: var(--bg-darker);
+    border: 1px solid #444;
+    align-self: flex-end;
+    margin-left: auto;
+}
+.chat-ai {
+    background-color: #2c2c2c;
+    border: 1px solid var(--accent);
+    align-self: flex-start;
+}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block header_title %}Create New Project{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card soft-shadow bg-dark-card border-0">
+            <div class="card-body p-5">
+                <h2 class="mb-4 text-white">What do you want to build?</h2>
+                <form id="generateForm">
+                    <div class="mb-4">
+                        <textarea class="form-control bg-dark text-light border-secondary fs-5" id="ideaInput" rows="3" placeholder="e.g. Build a college attendance management system..." required></textarea>
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small">Project Type</label>
+                            <select class="form-select bg-dark text-light border-secondary" id="optType">
+                                <option>Web App</option>
+                                <option>Mobile App</option>
+                                <option>CLI Tool</option>
+                                <option>API Service</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small">Preferred Tech Stack</label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" id="optStack" placeholder="e.g. Python/React">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small">Team Size</label>
+                            <select class="form-select bg-dark text-light border-secondary" id="optTeam">
+                                <option>Solo Developer</option>
+                                <option>Small (2-5)</option>
+                                <option>Enterprise (5+)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-accent btn-lg text-dark fw-bold" id="generateBtn">
+                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Generate Plan
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="loadingState" class="mt-4 d-none text-center">
+                    <div class="spinner-border text-accent mb-3" role="status"></div>
+                    <h5 class="text-white">Initializing Workspace...</h5>
+                    <p class="text-muted">Setting up agent lab pipelines.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
